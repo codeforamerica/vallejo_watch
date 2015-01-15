@@ -22,7 +22,7 @@ See [here](https://github.com/codeforamerica/howto/blob/master/Python-Virtualenv
 `python manage.py runserver`
 
 ##### 6. Add or modify quality of life issues
-(http://127.0.0.1:8000/admin/visualize/incident/)
+http://127.0.0.1:8000/admin/visualize/incident/
 
 ##### 7. View quality of life issues
-(http://127.0.0.1:8000/)
+http://127.0.0.1:8000/
