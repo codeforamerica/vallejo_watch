@@ -1,0 +1,4 @@
+.google_api_key
+*.pyc
+db.sqlite3
+static/admin

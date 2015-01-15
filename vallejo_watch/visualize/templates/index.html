@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=1024, user-scalable=no">
+    <style>
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0;}
+/*      #map{ height: 100%}*/
+    </style>
+
+<style>
+    #cont { width: 100%; height: 100%}
+    #map { width: 80%; height: 100% }
+</style>
+
+<title>VallejoWatch</title>
+
+{% load static from staticfiles %}
+
+<link href="{% static 'visualize/leaflet.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'visualize/d3.min.js' %}"></script>
+<script src="{% static 'visualize/colorbrewer.js' %}"></script>
+<script src="{% static 'visualize/leaflet.js' %}"></script>
+
+<div id="cont">
+    <div id="map"></div>
+    <div id="filterbox"></div>
+</div>
+
+<script>
+var m = L.map("map").setView([38.113056, -122.235833], 13);
+
+// make the map
+L.tileLayer("http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg",{minZoom:4,maxZoom:18,opacity:0.75,attribution:'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
+.addTo(m);
+
+// load django data objects
+var x = JSON.parse("{{incidents}}");
+
+// add data to map
+for (i=0; i<x.length; i++) {
+
+    var circle = L.circle([x[i][1], x[i][0]], 100, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5
+    }).addTo(m);
+}
+
+</script>
