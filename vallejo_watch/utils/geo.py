@@ -24,7 +24,7 @@ def geocode(address):
 
     if api_key:
 
-        data = {'address': address, 'key': api_key}
+        data = {'address': address + ' Vallejo, CA', 'key': api_key}  # for now assume all addresses are within vallejo
         url = 'https://maps.googleapis.com/maps/api/geocode/json?%s' % urllib.urlencode(data)
 
         r = requests.get(url) 

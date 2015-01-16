@@ -5,46 +5,222 @@
     <style>
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0;}
-/*      #map{ height: 100%}*/
     </style>
 
+{% load static from staticfiles %}
+
+<link href="{% static 'visualize/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'visualize/bootstrap-switch.min.css' %}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
+<script src="{% static 'visualize/d3.min.js' %}"></script>
+<script src="{% static 'visualize/colorbrewer.js' %}"></script>
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="{% static 'visualize/bootstrap.min.js' %}"></script>
+<script src="{% static 'visualize/bootstrap-switch.min.js' %}"></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
 <style>
-    #cont { width: 100%; height: 100%}
-    #map { width: 80%; height: 100% }
+td {
+    padding: 20px 0px 20px 16px;
+}
+#cont {
+    width: 100%;
+    height: 100%;
+}
+#map {
+    width: 80%;
+    height: 100%;
+    float: left;
+}
+#filterbox {
+    width: 20%;
+    height: 100%;
+    float: right;
+}
 </style>
 
 <title>VallejoWatch</title>
 
-{% load static from staticfiles %}
-
-<link href="{% static 'visualize/leaflet.css' %}" rel="stylesheet" type="text/css">
-<script src="{% static 'visualize/d3.min.js' %}"></script>
-<script src="{% static 'visualize/colorbrewer.js' %}"></script>
-<script src="{% static 'visualize/leaflet.js' %}"></script>
-
 <div id="cont">
     <div id="map"></div>
-    <div id="filterbox"></div>
+    <div id="filterbox">
+        <table>
+        <tr><td><input type="checkbox" checked name="vandalismCheck"></td><td><h5>VANDALISM</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="noiseCheck"></td><td><h5>NOISE</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="graffitiCheck"></td><td><h5>GRAFFITI</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="drugCheck"></td><td><h5>DRUG ACTIVITY</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="vehicleCheck"></td><td><h5>VEHICLE</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="burglaryCheck"></td><td><h5>BURGLARY</h5></td></tr>
+        <tr><td><input type="checkbox" checked name="animalCheck"></td><td><h5>ANIMAL</h5></td></tr>
+        </table>
+    </div>
 </div>
 
 <script>
-var m = L.map("map").setView([38.113056, -122.235833], 13);
+var m = L.map("map").setView([38.113056, -122.235833], 12); // todo make this dynamic and dependent on geographic of incidents to be displayed
 
 // make the map
 L.tileLayer("http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg",{minZoom:4,maxZoom:18,opacity:0.75,attribution:'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
 .addTo(m);
 
 // load django data objects
-var x = JSON.parse("{{incidents}}");
+var x = {{incidents|safe}};
+
+var vandalismMarkers = [];
+var noiseMarkers = [];
+var graffitiMarkers = [];
+var drugMarkers = [];
+var vehicleMarkers = [];
+var burglaryMarkers = [];
+var animalMarkers = [];
+
+var issueTypes = {
+    'vn': 'Vandalism',
+    'nc': 'Noise Complaint',
+    'gr': 'Graffiti',
+    'dr': 'Drug Activity',
+    've': 'Suspicious Vehicle',
+    'bl': 'Burglary',
+    'an': 'Animal'
+}
 
 // add data to map
 for (i=0; i<x.length; i++) {
 
-    var circle = L.circle([x[i][1], x[i][0]], 100, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-    }).addTo(m);
+    var marker = L.marker([x[i][1], x[i][0]])
+        .bindPopup('<b>' + issueTypes[x[i][2]] + '</b>' + '<br>' + x[i][4] + '<br>' + x[i][3]);
+
+    if (x[i][2] == 'vn') {
+        vandalismMarkers.push(marker);
+        m.addLayer(vandalismMarkers[vandalismMarkers.length - 1]);
+    } else if (x[i][2] == 'nc') {
+        noiseMarkers.push(marker);
+        m.addLayer(noiseMarkers[noiseMarkers.length - 1]);
+    } else if (x[i][2] == 'gr') {
+        graffitiMarkers.push(marker);
+        m.addLayer(graffitiMarkers[graffitiMarkers.length - 1]);
+    } else if (x[i][2] == 'dr') {
+        drugMarkers.push(marker);
+        m.addLayer(drugMarkers[drugMarkers.length - 1]);
+    } else if (x[i][2] == 've') {
+        vehicleMarkers.push(marker);
+        m.addLayer(vehicleMarkers[vehicleMarkers.length - 1]);
+    } else if (x[i][2] == 'bl') {
+        burglaryMarkers.push(marker);
+        m.addLayer(burglaryMarkers[burglaryMarkers.length - 1]);
+    } else if (x[i][2] == 'an') {
+        animalMarkers.push(marker);
+        m.addLayer(animalMarkers[animalMarkers.length - 1]);
+    }
 }
+
+$.fn.bootstrapSwitch.defaults.size = 'small';
+
+$("[name='vandalismCheck']").bootstrapSwitch();
+$("[name='noiseCheck']").bootstrapSwitch();
+$("[name='graffitiCheck']").bootstrapSwitch();
+$("[name='drugCheck']").bootstrapSwitch();
+$("[name='vehicleCheck']").bootstrapSwitch();
+$("[name='burglaryCheck']").bootstrapSwitch();
+$("[name='animalCheck']").bootstrapSwitch();
+
+$('input[name="vandalismCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<vandalismMarkers.length; i++) {
+            m.addLayer(vandalismMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<vandalismMarkers.length; i++) {
+            m.removeLayer(vandalismMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="noiseCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<noiseMarkers.length; i++) {
+            m.addLayer(noiseMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<noiseMarkers.length; i++) {
+            m.removeLayer(noiseMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="graffitiCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<graffitiMarkers.length; i++) {
+            m.addLayer(graffitiMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<graffitiMarkers.length; i++) {
+            m.removeLayer(graffitiMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="drugCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<drugMarkers.length; i++) {
+            m.addLayer(drugMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<drugMarkers.length; i++) {
+            m.removeLayer(drugMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="vehicleCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<vehicleMarkers.length; i++) {
+            m.addLayer(vehicleMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<vehicleMarkers.length; i++) {
+            m.removeLayer(vehicleMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="burglaryCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<burglaryMarkers.length; i++) {
+            m.addLayer(burglaryMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<burglaryMarkers.length; i++) {
+            m.removeLayer(burglaryMarkers[i]);
+        }
+
+    }
+
+});
+
+$('input[name="animalCheck"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+        for (i=0; i<animalMarkers.length; i++) {
+            m.addLayer(animalMarkers[i]);
+        }
+    } else if (state == false) {
+        for (i=0; i<animalMarkers.length; i++) {
+            m.removeLayer(animalMarkers[i]);
+        }
+
+    }
+
+});
 
 </script>

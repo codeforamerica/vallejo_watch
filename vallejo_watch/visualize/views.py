@@ -1,15 +1,17 @@
 import json
 
 from django.shortcuts import render
-from django.core.serializers.json import DjangoJSONEncoder
 
 from vallejo_watch.visualize.models import Incident
 
 
 def home(request):
-    incidents = Incident.objects.all().values_list('x_pos', 'y_pos')
-    incidents_json = json.dumps(list(incidents), cls=DjangoJSONEncoder)
+    incidents = Incident.objects.all().values_list('x_pos', 'y_pos', 'issue_type', 'address', 'timestamp')
+    formatted_incidents = []
+    for i in incidents:
+        ts_formatted = i[4].strftime("%I:%M %p %b %d, %Y")
+        formatted_incidents.append(list(i[:4]) + [ts_formatted])
 
-    # TODO: add fields to the incident objects so that we can support filtering
+    incidents_json = json.dumps(formatted_incidents)
 
     return render(request, 'index.html', {'incidents': incidents_json})

@@ -3,23 +3,27 @@ from django.db import models
 from vallejo_watch.utils.geo import geocode
 
 class Incident(models.Model):
-    OPEN = 'op'
-    CLOSED = 'cl'
-
     NOISE_COMPLAINT = 'nc'
     GRAFFITI = 'gr'
-
-    STATUS_CHOICES = ((OPEN, 'Open'),
-                      (CLOSED, 'Closed'))
+    DRUG_ACTIVITY = 'dr'
+    VANDALISM = 'vn'
+    VEHICLE = 've'
+    BURGLARY = 'bl'
+    ANIMAL = 'an'
 
     ISSUE_CHOICES = ((NOISE_COMPLAINT, 'Noise Complaint'),
-                     (GRAFFITI, 'Graffiti'))
+                     (GRAFFITI, 'Graffiti'),
+                     (DRUG_ACTIVITY, 'Drug Activity'),
+                     (VANDALISM, 'Vandalism'),
+                     (VEHICLE, 'Vehicle'),
+                     (BURGLARY, 'Burglary'),
+                     (ANIMAL, 'Animal')
+                    )
 
     timestamp = models.DateTimeField()
     address = models.CharField(max_length=256)
     x_pos = models.FloatField(null=True, blank=True)  # TODO: change lat and lon to a single geom type for PostGIS
     y_pos = models.FloatField(null=True, blank=True)
-    status = models.CharField(null=True, blank=True, max_length=2, choices=STATUS_CHOICES)
     issue_type = models.CharField(null=True, blank=True, max_length=2, choices=ISSUE_CHOICES)
     description = models.TextField(null=True, blank=True)
 
