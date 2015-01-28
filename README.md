@@ -16,7 +16,7 @@ See [here](https://github.com/codeforamerica/howto/blob/master/Python-Virtualenv
 `python manage.py collectstatic`
 
 ##### 4. Create initial superuser
-`django-admin.py createsuperuser`
+`python manage.py createsuperuser`
 
 ##### 5. Initialize local server
 `python manage.py runserver`
