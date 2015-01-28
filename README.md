@@ -21,7 +21,7 @@ See [here](https://github.com/codeforamerica/howto/blob/master/Python-Virtualenv
 ##### 5. Initialize local server
 `python manage.py runserver`
 
-##### 6. Set you Google API key
+##### 6. Set your Google API key
 Add the API key for your Google Developer account to a file named `.google_api_key` for geocoding addresses.
 
 ##### 7. Add or modify quality of life issues
