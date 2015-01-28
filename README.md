@@ -22,8 +22,9 @@ See [here](https://github.com/codeforamerica/howto/blob/master/Python-Virtualenv
 `python manage.py runserver`
 
 ##### 6. Set your Google API key
-(Follow [these](https://developers.google.com/maps/documentation/geocoding/?csw=1#api_key) instructions for obtaining an API key.)
-Add the API key for your Google Developer account to a file named `.google_api_key` for geocoding addresses.
+Follow [these](https://developers.google.com/maps/documentation/geocoding/?csw=1#api_key) instructions for obtaining an API key if you don't already have one.
+
+Add your API key for your Google Developer account to a file named `.google_api_key` for geocoding addresses.
 
 ##### 7. Add or modify quality of life issues
 http://127.0.0.1:8000/admin/visualize/incident/
