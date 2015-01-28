@@ -15,8 +15,8 @@ See [here](https://github.com/codeforamerica/howto/blob/master/Python-Virtualenv
 ##### 3. Collect static files
 `python manage.py collectstatic`
 
-##### 4. Create initial superuser
-`python manage.py createsuperuser`
+##### 4. Setup database and create superuser
+`python manage.py syncdb` (this will prompt you to create a new superuser)
 
 ##### 5. Initialize local server
 `python manage.py runserver`
